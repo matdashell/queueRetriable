@@ -25,12 +25,12 @@ public class ReflectionProcess {
         }
     }
 
-    public Object getMainArg(JoinPoint joinPoint, Class<?> aClass) {
+    public <T> T getMainArg(JoinPoint joinPoint, Class<T> aClass) {
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
             if(arg == null) continue;
             if(arg.getClass().getTypeName().equals(aClass.getTypeName())) {
-                return arg;
+                return aClass.cast(arg);
             }
         }
         throw new RuntimeException("Object "+aClass.getTypeName()+" not found in method " + getMethod(joinPoint).getName());

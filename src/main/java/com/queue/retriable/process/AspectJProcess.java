@@ -20,7 +20,7 @@ public class AspectJProcess {
     private final ReflectionProcess reflectionProcess;
 
     public void processRetriableException(JoinPoint joinPoint, RetriableException e) {
-        AnnotationResult annotationResult = getAnnotationResult(joinPoint);
+        AnnotationResult annotationResult = reflectionProcess.getAnnotationResult(joinPoint);
         if(notIsLastExecution(joinPoint, annotationResult)) {
             processDefaultAttempentMessage(joinPoint, annotationResult, e);
         } else {
@@ -28,12 +28,8 @@ public class AspectJProcess {
         }
     }
 
-    private AnnotationResult getAnnotationResult(JoinPoint joinPoint) {
-        return reflectionProcess.getAnnotationResult(joinPoint);
-    }
-
     private void processDefaultAttempentMessage(JoinPoint joinPoint, AnnotationResult annotationResult, Throwable e) {
-        Message message = (Message) reflectionProcess.getMainArg(joinPoint, Message.class);
+        Message message = reflectionProcess.getMainArg(joinPoint, Message.class);
         incrementHeader(message);
         log.error("Failed in process... sending to queue [{}] - attempent [{} of {}] - [{}] - with body [{}]",
                 annotationResult.getOnAttempentsSendToQueue(),
@@ -46,7 +42,7 @@ public class AspectJProcess {
     }
 
     private void processMaxAttempentMessage(JoinPoint joinPoint, AnnotationResult annotationResult, Throwable e) {
-        Message message = (Message) reflectionProcess.getMainArg(joinPoint, Message.class);
+        Message message = reflectionProcess.getMainArg(joinPoint, Message.class);
         log.error("Failed in process... sending to queue [{}] - attempent [{} of {}] - [{}] - with body [{}]",
                 annotationResult.getOnMaxAttempentsSendToQueue(),
                 getCurrentAttempents(message),
@@ -58,7 +54,7 @@ public class AspectJProcess {
     }
 
     private boolean notIsLastExecution(JoinPoint joinPoint, AnnotationResult annotationResult) {
-        Message message = (Message) reflectionProcess.getMainArg(joinPoint, Message.class);
+        Message message = reflectionProcess.getMainArg(joinPoint, Message.class);
         Integer headerAtempent = getCurrentAttempents(message);
         return headerAtempent == null || headerAtempent < annotationResult.getMaxAttempents();
     }
