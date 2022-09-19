@@ -33,7 +33,23 @@ public class ReflectionProcess {
                 return aClass.cast(arg);
             }
         }
-        throw new RuntimeException("Object "+aClass.getTypeName()+" not found in method " + getMethod(joinPoint).getName());
+        throw new RuntimeException("Object " + aClass.getTypeName() + " not found in method " + getMethod(joinPoint).getName());
+    }
+
+    public void verifyExistenceOfInArgs(JoinPoint joinPoint ,Class<?> ...classes) {
+        boolean contains;
+        for (Class<?> aClass : classes) {
+            contains = false;
+            for (Object arg : joinPoint.getArgs()) {
+                if(arg.getClass().getTypeName().equals(aClass.getTypeName())) {
+                    contains = true;
+                    break;
+                }
+            }
+            if(!contains) {
+                throw new RuntimeException("Object " + aClass.getTypeName() + " not found in method " + getMethod(joinPoint).getName());
+            }
+        }
     }
 
     public AnnotationResult getAnnotationResult(JoinPoint joinPoint) {
@@ -43,11 +59,11 @@ public class ReflectionProcess {
             if(RetriableQueueMethod.class.equals(annotation.annotationType())) {
                 RetriableQueueMethod retriableQueueAnnotation = (RetriableQueueMethod) annotation;
                 return new AnnotationResult(
-                        retriableQueueAnnotation.maxAttempents(),
+                        retriableQueueAnnotation.maxAttempts(),
                         retriableQueueAnnotation.messageOnException(),
                         retriableQueueAnnotation.messageOnMaxExecutions(),
-                        retriableQueueAnnotation.onMaxAttempentsSendToQueue(),
-                        retriableQueueAnnotation.onAttempentsSendToQueue()
+                        retriableQueueAnnotation.onMaxAttemptsSendToQueue(),
+                        retriableQueueAnnotation.onAttemptsSendToQueue()
                 );
             }
         }

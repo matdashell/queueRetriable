@@ -11,11 +11,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RetriableQueueMethod {
 
-    int maxAttempents() default 5;
+    int maxAttempts() default 5;
     String messageOnException() default "...";
     String messageOnMaxExecutions() default "...";
     @NonNull
-    String onMaxAttempentsSendToQueue();
+    String onMaxAttemptsSendToQueue();
     @NonNull
-    String onAttempentsSendToQueue();
+    String onAttemptsSendToQueue();
 }
