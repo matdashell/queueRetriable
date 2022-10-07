@@ -41,31 +41,20 @@ public class RetriableQueueMethodProcess {
 
         String body = new String(message.getBody());
 
-        if(isFirstExecution(message)) {
-            log.error("Failed in process... sending to queue [{}] - [{}] - with body [{}]",
-                    currentQueue,
-                    logMessage,
-                    body,
-                    error);
-        } else {
-            log.error("Failed in process... sending to queue [{}] - attempt [{} of {}] - [{}] - with body [{}]",
-                    currentQueue,
-                    getCurrentAttempts(message),
-                    annotationResult.getMaxAttempts(),
-                    logMessage,
-                    body,
-                    error);
-        }
+        log.error("Failed in process... sending to queue [{}] - attempt [{} of {}] - [{}] - with body [{}]",
+                currentQueue,
+                getCurrentAttempts(message),
+                annotationResult.getMaxAttempts(),
+                logMessage,
+                body,
+                error);
+
         rabbitTemplate.convertAndSend(currentQueue, message);
     }
 
     private boolean isLastExecution(Message message, AnnotationResult annotationResult) {
         Integer headerAtempent = getCurrentAttempts(message);
         return headerAtempent == annotationResult.getMaxAttempts();
-    }
-
-    private boolean isFirstExecution(Message message) {
-        return getCurrentAttempts(message) == 0;
     }
 
     private void incrementHeader(Message message) {
