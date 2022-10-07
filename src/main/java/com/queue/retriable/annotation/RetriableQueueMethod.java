@@ -12,10 +12,12 @@ import java.lang.annotation.Target;
 public @interface RetriableQueueMethod {
 
     int maxAttempts() default 5;
+
     String messageOnException() default "...";
+
     String messageOnMaxExecutions() default "...";
-    @NonNull
-    String onMaxAttemptsSendToQueue();
-    @NonNull
-    String onAttemptsSendToQueue();
+
+    @NonNull String onMaxAttemptsSendToQueue();
+
+    @NonNull String onAttemptsSendToQueue();
 }

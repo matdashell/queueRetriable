@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.queue.retriable.process.ReflectionProcess,\
-com.queue.retriable.process.AspectJProcess,\
+com.queue.retriable.process.RetriableQueueMethodProcess,\
 com.queue.retriable.AspectJ
